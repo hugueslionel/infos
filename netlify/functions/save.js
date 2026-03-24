@@ -40,7 +40,7 @@ exports.handler = async (event) => {
           "User-Agent": "netlify-function",
         },
         body: JSON.stringify({
-          message: "update notes.json",
+          message: "update notes.json [skip ci]",
           content,
           branch: BRANCH,
           ...(sha ? { sha } : {}),
