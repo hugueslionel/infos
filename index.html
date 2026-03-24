@@ -299,6 +299,13 @@ function renderCards() {
 }
 
 // ── FONCTIONS ──
+
+async function saveToCloud() {
+    await fetch("/.netlify/functions/save", {
+        method: "POST",
+        body: JSON.stringify({ cards }),
+    });
+}
 function setCardExpanded(cardId, isExpanded) {
     const idx = cards.findIndex(c => c.id == cardId);
     if (idx === -1) return;
