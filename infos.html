@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Informations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1600px; margin: 0 auto; }
+
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 { font-size: 28px; color: #333; flex: 1; min-width: 200px; }
+
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        .btn-add {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .btn-add:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76,175,80,.3);
+        }
+
+        /* ── Grille flex wrap ── */
+        .cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* ── Wrapper ── */
+        .card-wrapper {
+            flex: 0 0 auto;
+            min-width: 220px;
+            position: relative;
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+            transition: box-shadow .3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .card:not(.is-resizing):hover { box-shadow: 0 8px 20px rgba(0,0,0,.15); }
+        .card.dragging  { opacity:.5; transform:scale(.98); cursor:grabbing; }
+        .card.drag-over { border:2px dashed #667eea; transform:scale(1.02); }
+
+        /* Couleurs */
+        .card::before {
+            content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+            opacity:.5; z-index:0; pointer-events:none;
+        }
+        .card.color-blue::before   { background:linear-gradient(to right,#667eea,transparent); }
+        .card.color-green::before  { background:linear-gradient(to right,#4CAF50,transparent); }
+        .card.color-orange::before { background:linear-gradient(to right,#ff9800,transparent); }
+        .card.color-red::before    { background:linear-gradient(to right,#f44336,transparent); }
+        .card.color-purple::before { background:linear-gradient(to right,#9c27b0,transparent); }
+        .card.color-teal::before   { background:linear-gradient(to right,#009688,transparent); }
+
+        .card-header {
+            padding:20px; display:flex; justify-content:space-between;
+            align-items:flex-start; gap:10px;
+            position:relative; z-index:1; flex-shrink:0;
+        }
+        .card-title { font-size:20px; font-weight:600; color:#000; flex:1; word-break:break-word; }
+        .card-actions { display:flex; gap:8px; }
+
+        .btn-icon {
+            background:transparent; border:none; cursor:pointer;
+            font-size:18px; padding:5px; border-radius:4px; transition:all .2s;
+        }
+        .btn-icon:hover { background:rgba(0,0,0,0.05); }
+
+        .card-content {
+            padding:0 20px 20px; color:#000; line-height:1.6;
+            position:relative; z-index:1; word-wrap:break-word;
+            overflow-y:auto; flex:1; min-height:0;
+        }
+        .card-content.collapsed { max-height:100px; overflow:hidden; }
+        .card-content.collapsed::after {
+            content:''; position:absolute; bottom:0; left:0; right:0;
+            height:40px; background:linear-gradient(transparent,white); pointer-events:none;
+        }
+
+        .card-footer {
+            padding:12px 20px; background:rgba(248,249,250,.9);
+            border-top:1px solid #e9ecef;
+            display:flex; justify-content:center; align-items:center; gap: 15px;
+            position:relative; z-index:1; flex-shrink:0;
+        }
+
+        .btn-expand {
+            background:#667eea; border:none; color:white; cursor:pointer;
+            font-size:13px; font-weight:600; padding:6px 15px;
+            border-radius:20px; transition:all .2s;
+        }
+        .btn-expand:hover { background:#5568d3; transform:translateY(-1px); }
+
+        .btn-reset-size {
+            background:transparent; border:1px solid #ccc; color:#888;
+            cursor:pointer; font-size:12px; padding:4px 10px;
+            border-radius:20px; transition:all .2s;
+            display: none;
+        }
+        .card-wrapper.has-custom .btn-reset-size { display: block; }
+
+        /* ── RESIZE HANDLES ── */
+        .rh-right { position:absolute; top:10%; right:0; bottom:14px; width:14px; cursor:ew-resize; z-index:20; opacity:0; display:flex; align-items:center; justify-content:center; }
+        .rh-bottom { position:absolute; bottom:0; left:10%; right:14px; height:14px; cursor:ns-resize; z-index:20; opacity:0; display:flex; align-items:center; justify-content:center; }
+        .rh-corner { position:absolute; bottom:0; right:0; width:18px; height:18px; cursor:nwse-resize; z-index:21; opacity:0; }
+        .rh-corner::before { content:''; position:absolute; bottom:3px; right:3px; width:8px; height:8px; border-right:2px solid #667eea; border-bottom:2px solid #667eea; }
+        .card-wrapper:hover .rh-right, .card-wrapper:hover .rh-bottom, .card-wrapper:hover .rh-corner { opacity:1; }
+
+        /* ── MODAL ── */
+        .modal {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;
+        }
+        .modal.active { display:flex; }
+        .modal-content { background:white; padding:30px; border-radius:15px; max-width:700px; width:90%; max-height:85vh; overflow-y:auto; }
+        
+        .toolbar { background:#f8f9fa; border:2px solid #e9ecef; border-radius:8px 8px 0 0; padding:8px; display:flex; gap:5px; flex-wrap:wrap; }
+        .toolbar button { background:transparent; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; }
+        .toolbar button.active { background:#667eea; color:white; }
+        
+        .editor {
+            width:100%; min-height:200px; padding:15px; border:2px solid #e9ecef; border-top:none;
+            border-radius:0 0 8px 8px; outline:none; font-family:inherit;
+        }
+
+        .color-picker { display:flex; gap:10px; }
+        .color-option { width:35px; height:35px; border-radius:8px; cursor:pointer; border:3px solid transparent; }
+        .color-option.selected { border-color:#333; transform:scale(1.1); }
+        .blue { background:#667eea; } .green { background:#4CAF50; } .orange { background:#ff9800; }
+        .red { background:#f44336; } .purple { background:#9c27b0; } .teal { background:#009688; }
+
+        .empty-state { text-align:center; padding:60px; background:white; border-radius:15px; width:100%; color:#999; }
+        
+        body.resizing-ew * { cursor:ew-resize !important; user-select:none; }
+        body.resizing-ns * { cursor:ns-resize !important; user-select:none; }
+        body.resizing-nwse * { cursor:nwse-resize !important; user-select:none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📋 Mes Informations</h1>
+        <div class="header-actions">
+            <button class="btn-add" onclick="openModal()">+ Nouvelle info</button>
+            <div style="display: flex; gap: 5px;">
+                <button onclick="exportNotes()" 
+                        style="background-color: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    💾 Exporter
+                </button>            
+                <button onclick="document.getElementById('importFile').click()" 
+                        style="background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    📂 Importer
+                </button>            
+                <input type="file" id="importFile" style="display:none" onchange="importNotes(event)" accept=".json">
+            </div>
+        </div>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle" style="margin-bottom:20px;">Nouvelle information</h2>
+        <div style="margin-bottom:15px;">
+            <label style="display:block; font-weight:bold; margin-bottom:5px;">Titre</label>
+            <input type="text" id="cardTitle" style="width:100%; padding:10px; border:2px solid #eee; border-radius:8px;">
+        </div>
+        <div style="margin-bottom:15px;">
+            <label style="display:block; font-weight:bold; margin-bottom:5px;">Couleur</label>
+            <div class="color-picker">
+                <div class="color-option blue selected" onclick="selectColor('blue')"></div>
+                <div class="color-option green" onclick="selectColor('green')"></div>
+                <div class="color-option orange" onclick="selectColor('orange')"></div>
+                <div class="color-option red" onclick="selectColor('red')"></div>
+                <div class="color-option purple" onclick="selectColor('purple')"></div>
+                <div class="color-option teal" onclick="selectColor('teal')"></div>
+            </div>
+        </div>
+        <div>
+            <label style="display:block; font-weight:bold; margin-bottom:5px;">Contenu</label>
+            <div class="toolbar">
+                <button onclick="formatText('bold')"><b>B</b></button>
+                <button onclick="formatText('italic')"><i>I</i></button>
+                <button onclick="formatText('underline')"><u>U</u></button>
+                <button onclick="formatText('insertUnorderedList')">• Liste</button>
+                <select id="fontSizeSelect" onchange="changeFontSize(this.value)">
+                    <option value="3">Taille normale</option>
+                    <option value="4">Grande</option>
+                    <option value="5">Très grande</option>
+                </select>
+            </div>
+            <div class="editor" id="cardContent" contenteditable="true"></div>
+        </div>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn-add" style="flex:1; margin:0;" onclick="saveCard()">Enregistrer</button>
+            <button style="flex:1; background:#ccc; border:none; border-radius:12px; cursor:pointer;" onclick="closeModal()">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const DEFAULT_W = 350;
+const MIN_W = 220;
+const MIN_H = 180;
+
+let cards = [];
+try {
+    const saved = localStorage.getItem('infoCards');
+    if (saved) cards = JSON.parse(saved);
+} catch(e) { cards = []; }
+
+let selectedColor = 'blue';
+let editingCardId = null;
+let draggedCardId = null;
+
+function saveToStorage() { localStorage.setItem('infoCards', JSON.stringify(cards)); }
+
+function renderCards() {
+    const grid = document.getElementById('cardsGrid');
+    if (cards.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><h2>Aucune note. Cliquez sur "+ Nouvelle info".</h2></div>`;
+        return;
+    }
+
+    grid.innerHTML = cards.map(card => {
+        const w = card.customWidth || DEFAULT_W;
+        const h = card.customHeight || null;
+        const hasCustom = !!(card.customWidth || card.customHeight);
+        const collapsed = !h && !card.expanded;
+
+        return `
+        <div class="card-wrapper ${hasCustom ? 'has-custom' : ''}" style="width:${w+10}px;" data-card-id="${card.id}">
+            <div class="card color-${card.color}" style="${h ? `height:${h}px` : ''}" 
+                 data-card-id="${card.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)">
+                <div class="card-header">
+                    <div class="card-title">${card.title}</div>
+                    <div class="card-actions">
+                        <button class="btn-icon" onclick="editCard(${card.id})">✏️</button>
+                        <button class="btn-icon" onclick="deleteCard(${card.id})">🗑️</button>
+                    </div>
+                </div>
+                <div class="card-content ${collapsed ? 'collapsed' : ''}">${card.content}</div>
+                <div class="card-footer">
+                    <button class="btn-reset-size" onclick="resetCardSize(${card.id})" title="Taille d'origine">↺</button>
+                    <button class="btn-expand" onclick="event.stopPropagation(); setCardExpanded(${card.id}, true)" title="Lire plus">▼</button>
+                    <button class="btn-expand" onclick="event.stopPropagation(); setCardExpanded(${card.id}, false)" title="Voir moins">▲</button>
+                </div>
+            </div>
+            <div class="rh-right" onmousedown="startResize(event,${card.id},'right')"></div>
+            <div class="rh-bottom" onmousedown="startResize(event,${card.id},'bottom')"></div>
+            <div class="rh-corner" onmousedown="startResize(event,${card.id},'corner')"></div>
+        </div>`;
+    }).join('');
+}
+
+// ── FONCTIONS ──
+function setCardExpanded(cardId, isExpanded) {
+    const idx = cards.findIndex(c => c.id == cardId);
+    if (idx === -1) return;
+    cards[idx].expanded = isExpanded;
+    if (!isExpanded) delete cards[idx].customHeight;
+    saveToStorage(); renderCards();
+}
+
+function resetCardSize(cardId) {
+    const idx = cards.findIndex(c => c.id == cardId);
+    if (idx !== -1) {
+        delete cards[idx].customWidth;
+        delete cards[idx].customHeight;
+        cards[idx].expanded = false;
+        saveToStorage(); renderCards();
+    }
+}
+
+// ── MODAL & EDIT ──
+function openModal() {
+    editingCardId = null;
+    document.getElementById('modalTitle').textContent = "Nouvelle information";
+    document.getElementById('cardTitle').value = "";
+    document.getElementById('cardContent').innerHTML = "";
+    document.getElementById('modal').classList.add('active');
+    setTimeout(() => document.getElementById('cardTitle').focus(), 100);
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+function saveCard() {
+    const title = document.getElementById('cardTitle').value.trim();
+    const content = document.getElementById('cardContent').innerHTML.trim();
+    if (!title || !content) return alert("Remplissez tout !");
+
+    if (editingCardId) {
+        const idx = cards.findIndex(c => c.id == editingCardId);
+        cards[idx] = { ...cards[idx], title, content, color: selectedColor };
+    } else {
+        cards.push({ id: Date.now(), title, content, color: selectedColor, expanded: false });
+    }
+    saveToStorage(); renderCards(); closeModal();
+}
+
+function editCard(id) {
+    const card = cards.find(c => c.id == id);
+    editingCardId = id;
+    document.getElementById('modalTitle').textContent = "Modifier l'information";
+    document.getElementById('cardTitle').value = card.title;
+    document.getElementById('cardContent').innerHTML = card.content;
+    selectColor(card.color);
+    document.getElementById('modal').classList.add('active');
+}
+
+function deleteCard(id) {
+    if (confirm("Supprimer ?")) {
+        cards = cards.filter(c => c.id != id);
+        saveToStorage(); renderCards();
+    }
+}
+
+function selectColor(c) {
+    selectedColor = c;
+    document.querySelectorAll('.color-option').forEach(opt => opt.classList.toggle('selected', opt.classList.contains(c)));
+}
+
+function formatText(cmd) { document.execCommand(cmd, false, null); }
+function changeFontSize(s) { document.execCommand('fontSize', false, s); }
+
+// ── RESIZE ──
+let rsState = null;
+function startResize(e, id, dir) {
+    e.preventDefault();
+    const wrapper = document.querySelector(`[data-card-id="${id}"]`);
+    const cardEl = wrapper.querySelector('.card');
+    rsState = { id, dir, wrapper, cardEl, startX: e.clientX, startY: e.clientY, startW: wrapper.offsetWidth-10, startH: cardEl.offsetHeight };
+    document.body.classList.add(`resizing-${dir==='corner'?'nwse':(dir==='right'?'ew':'ns')}`);
+    document.addEventListener('mousemove', onResize);
+    document.addEventListener('mouseup', stopResize);
+}
+
+function onResize(e) {
+    const dx = e.clientX - rsState.startX;
+    const dy = e.clientY - rsState.startY;
+    if (rsState.dir !== 'bottom') rsState.wrapper.style.width = Math.max(MIN_W, rsState.startW + dx) + 10 + 'px';
+    if (rsState.dir !== 'right') rsState.cardEl.style.height = Math.max(MIN_H, rsState.startH + dy) + 'px';
+}
+
+function stopResize() {
+    const idx = cards.findIndex(c => c.id == rsState.id);
+    cards[idx].customWidth = rsState.wrapper.offsetWidth - 10;
+    if (rsState.dir !== 'right') {
+        cards[idx].customHeight = rsState.cardEl.offsetHeight;
+        cards[idx].expanded = true;
+    }
+    document.body.className = "";
+    document.removeEventListener('mousemove', onResize);
+    document.removeEventListener('mouseup', stopResize);
+    saveToStorage(); renderCards();
+}
+
+// ── DRAG & DROP ──
+function dragStart(e) { draggedCardId = e.target.closest('.card').dataset.cardId; e.target.classList.add('dragging'); }
+function dragOver(e) { e.preventDefault(); const c = e.target.closest('.card'); if (c) c.classList.add('drag-over'); }
+function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over')); }
+function drop(e) {
+    const targetId = e.target.closest('.card').dataset.cardId;
+    if (draggedCardId && targetId !== draggedCardId) {
+        const i1 = cards.findIndex(c => c.id == draggedCardId);
+        const i2 = cards.findIndex(c => c.id == targetId);
+        const [moved] = cards.splice(i1, 1);
+        cards.splice(i2, 0, moved);
+        saveToStorage(); renderCards();
+    }
+}
+
+// ── EXPORT / IMPORT ──
+function exportNotes() {
+    const dataStr = JSON.stringify(cards, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url; link.download = "notes.json"; link.click();
+}
+
+function importNotes(e) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const imported = JSON.parse(event.target.result);
+            if (confirm(`Importer ${imported.length} notes ?`)) {
+                cards = imported; saveToStorage(); renderCards();
+            }
+        } catch(e) { alert("Erreur fichier"); }
+    };
+    reader.readAsText(e.target.files[0]);
+    e.target.value = "";
+}
+
+// Auto-import (si servi via GitHub Pages/Serveur)
+async function checkAutoImport() {
+    try {
+        const res = await fetch('notes.json');
+        if (res.ok) {
+            const data = await res.json();
+            if (cards.length === 0 && data.length > 0) {
+                cards = data; saveToStorage(); renderCards();
+            }
+        }
+    } catch(e) {}
+}
+
+// Nettoyage Coller & Echap
+document.getElementById('cardContent').addEventListener('paste', e => {
+    e.preventDefault();
+    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, text);
+});
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// INIT
+cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
+renderCards();
+checkAutoImport();
+
+</script>
+</body>
+</html>
