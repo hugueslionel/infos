@@ -448,16 +448,17 @@ function importNotes(e) {
 }
 
 // Auto-import (si servi via GitHub Pages/Serveur)
-async function checkAutoImport() {
+async function loadNotes() {
     try {
         const res = await fetch('notes.json');
         if (res.ok) {
             const data = await res.json();
-            if (cards.length === 0 && data.length > 0) {
-                cards = data; saveToStorage(); renderCards();
-            }
+            cards = data;
+            renderCards();
         }
-    } catch(e) {}
+    } catch(e) {
+        console.log("Pas de notes.json");
+    }
 }
 
 // Nettoyage Coller & Echap
