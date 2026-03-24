@@ -473,8 +473,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // INIT
 cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
 renderCards();
-checkAutoImport();
-
+loadNotes();
 </script>
 </body>
 </html>
