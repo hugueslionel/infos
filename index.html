@@ -187,6 +187,7 @@
         <h1>📋 Mes Informations</h1>
         <div class="header-actions">
             <button class="btn-add" onclick="openModal()">+ Nouvelle info</button>
+            <span id="syncStatus" style="font-size:13px; color:#888; min-width:120px; text-align:center;"></span>
             <div style="display: flex; gap: 5px;">
                 <button onclick="exportNotes()" 
                         style="background-color: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
@@ -302,26 +303,25 @@ function renderCards() {
 
 // ── FONCTIONS ──
 
-async function saveToCloud() {
-    try {
-        console.log("☁️ Envoi vers Netlify...");
+function setSyncStatus(msg, color) {
+    const el = document.getElementById('syncStatus');
+    if (el) { el.textContent = msg; el.style.color = color || '#888'; }
+}
 
+async function saveToCloud() {
+    setSyncStatus("⏳ Sauvegarde...", "#f59e0b");
+    try {
         const res = await fetch("/.netlify/functions/save", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cards }),
         });
-
-        if (!res.ok) {
-            throw new Error("Erreur serveur");
-        }
-
-        console.log("✅ Sauvegarde cloud OK");
-
+        if (!res.ok) throw new Error("Erreur serveur");
+        setSyncStatus("✅ Synchronisé", "#16a34a");
+        setTimeout(() => setSyncStatus(""), 3000);
     } catch (e) {
-        console.error("❌ Erreur sauvegarde cloud :", e);
+        setSyncStatus("❌ Hors-ligne", "#dc2626");
+        console.error("Erreur sauvegarde cloud :", e);
     }
 }
 function setCardExpanded(cardId, isExpanded) {
@@ -463,18 +463,28 @@ function importNotes(e) {
     e.target.value = "";
 }
 
-// Auto-import (si servi via GitHub Pages/Serveur)
+// Chargement depuis GitHub (notes.json) — anti-cache
 async function loadNotes() {
+    setSyncStatus("🔄 Chargement...", "#6366f1");
     try {
-        const res = await fetch('notes.json');
+        const res = await fetch('notes.json?t=' + Date.now());
         if (res.ok) {
-            const data = await res.json();
-            cards = data;
-            renderCards();
+            const cloudCards = await res.json();
+            if (Array.isArray(cloudCards)) {
+                cards = cloudCards;
+                localStorage.setItem('infoCards', JSON.stringify(cards));
+                renderCards();
+                setSyncStatus("✅ Chargé", "#16a34a");
+                setTimeout(() => setSyncStatus(""), 3000);
+                return;
+            }
         }
     } catch(e) {
-        console.log("Pas de notes.json");
+        console.log("Impossible de charger notes.json, fallback localStorage");
     }
+    // Fallback : données locales si le cloud est inaccessible
+    renderCards();
+    setSyncStatus("⚠️ Données locales", "#f59e0b");
 }
 
 // Nettoyage Coller & Echap
