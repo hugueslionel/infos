@@ -258,8 +258,10 @@ let selectedColor = 'blue';
 let editingCardId = null;
 let draggedCardId = null;
 
-function saveToStorage() { localStorage.setItem('infoCards', JSON.stringify(cards)); }
-
+function saveToStorage() {
+    localStorage.setItem('infoCards', JSON.stringify(cards));
+    saveToCloud();
+}
 function renderCards() {
     const grid = document.getElementById('cardsGrid');
     if (cards.length === 0) {
