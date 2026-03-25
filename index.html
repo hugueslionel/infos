@@ -467,7 +467,10 @@ function importNotes(e) {
 async function loadNotes() {
     setSyncStatus("🔄 Chargement...", "#6366f1");
     try {
-        const res = await fetch('notes.json?t=' + Date.now());
+        // Le paramètre ?t= force le rafraîchissement
+        const res = await fetch('notes.json?t=' + Date.now(), {
+            cache: "no-store" // Ajoute ceci pour être sûr
+        });
         if (res.ok) {
             const cloudCards = await res.json();
             if (Array.isArray(cloudCards)) {
@@ -475,18 +478,14 @@ async function loadNotes() {
                 localStorage.setItem('infoCards', JSON.stringify(cards));
                 renderCards();
                 setSyncStatus("✅ Chargé", "#16a34a");
-                setTimeout(() => setSyncStatus(""), 3000);
                 return;
             }
         }
     } catch(e) {
-        console.log("Impossible de charger notes.json, fallback localStorage");
+        console.error("Erreur de chargement :", e);
     }
-    // Fallback : données locales si le cloud est inaccessible
     renderCards();
-    setSyncStatus("⚠️ Données locales", "#f59e0b");
 }
-
 // Nettoyage Coller & Echap
 document.getElementById('cardContent').addEventListener('paste', e => {
     e.preventDefault();
