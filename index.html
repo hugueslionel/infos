@@ -535,6 +535,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // INIT
 cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
 loadNotes();
+window.addEventListener('beforeunload', (e) => {
+    if (isDirty) {
+        // Le message personnalisé n'est plus affiché par la plupart des navigateurs modernes 
+        // pour éviter le spam, mais la boîte de dialogue standard apparaîtra.
+        e.preventDefault();
+        e.returnValue = ''; 
+    }
+});
 </script>
 </body>
 </html>
