@@ -4,15 +4,16 @@ exports.handler = async (event) => {
   }
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const GITHUB_REPO  = process.env.GITHUB_REPO;   // ex: "monuser/mon-repo"
+  const GITHUB_REPO  = process.env.GITHUB_REPO;   
   const FILE_PATH    = "notes.json";
   const BRANCH       = "main";
 
   try {
     const body = JSON.parse(event.body);
+    // On encode les données en Base64 pour l'API GitHub
     const content = Buffer.from(JSON.stringify(body.cards, null, 2)).toString("base64");
 
-    // 1. Récupérer le SHA actuel du fichier (nécessaire pour le mettre à jour)
+    // 1. Récupérer le SHA actuel du fichier (indispensable pour modifier un fichier existant)
     const getRes = await fetch(
       `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}?ref=${BRANCH}`,
       {
@@ -29,7 +30,7 @@ exports.handler = async (event) => {
       sha = fileData.sha;
     }
 
-    // 2. Mettre à jour (ou créer) le fichier
+    // 2. Mettre à jour le fichier avec le tag [skip ci]
     const putRes = await fetch(
       `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}`,
       {
@@ -40,7 +41,8 @@ exports.handler = async (event) => {
           "User-Agent": "netlify-function",
         },
         body: JSON.stringify({
-          message: "update notes.json [skip ci]",
+          // AJOUT DU [skip ci] ICI :
+          message: "Sauvegarde auto des notes [skip ci]", 
           content,
           branch: BRANCH,
           ...(sha ? { sha } : {}),
@@ -50,14 +52,15 @@ exports.handler = async (event) => {
 
     if (!putRes.ok) {
       const err = await putRes.text();
-      return { statusCode: 500, body: `GitHub error: ${err}` };
+      return { statusCode: 500, body: "Erreur GitHub: " + err };
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ ok: true }),
+    return { 
+      statusCode: 200, 
+      body: JSON.stringify({ message: "Synchronisation réussie !" }) 
     };
-  } catch (e) {
-    return { statusCode: 500, body: `Server error: ${e.message}` };
+
+  } catch (error) {
+    return { statusCode: 500, body: error.toString() };
   }
 };
