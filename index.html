@@ -473,55 +473,34 @@ function importNotes(e) {
 
 // Chargement depuis GitHub (notes.json) — anti-cache
 async function loadNotes() {
-    // 1. On affiche l'état de chargement
     setSyncStatus("🔄 Chargement...", "#6366f1");
-
     try {
-        // 2. On récupère le fichier notes.json
-        // Le paramètre ?t= et cache: "no-store" forcent le navigateur à ignorer le cache
-        const res = await fetch('notes.json?t=' + Date.now(), {
+        // Le ?t= est crucial pour que l'ordi du bureau voit les modifs de l'ordi maison
+        const response = await fetch('notes.json?t=' + Date.now(), {
             cache: "no-store"
         });
 
-        if (res.ok) {
-            const cloudCards = await res.json();
-
-            // 3. On vérifie que les données sont valides
-            if (Array.isArray(cloudCards)) {
-                cards = cloudCards;
-                
-                // 4. On synchronise le stockage local
+        if (response.ok) {
+            const data = await response.json();
+            
+            // On vérifie que le fichier contient bien des données
+            if (data && Array.isArray(data)) {
+                cards = data;
                 localStorage.setItem('infoCards', JSON.stringify(cards));
-                
-                // 5. Important : on réinitialise l'état "Dirty" 
-                // car les données locales sont maintenant identiques au cloud
-                isDirty = false;
-
                 renderCards();
-                setSyncStatus("✅ Chargé", "#16a34a");
+                setSyncStatus("✅ Synchronisé", "#16a34a");
                 setTimeout(() => setSyncStatus(""), 3000);
-                return;
             }
         } else {
-            console.warn("Fichier notes.json introuvable ou inaccessible (Status: " + res.status + ")");
+            console.log("Fichier non trouvé sur le serveur, utilisation du local");
+            renderCards();
         }
     } catch (e) {
-        console.error("Erreur lors de la récupération du cloud :", e);
+        console.error("Erreur de synchro :", e);
+        // Si le réseau échoue, on affiche quand même ce qu'on a en local
+        renderCards();
+        setSyncStatus("⚠️ Mode hors-ligne", "#f59e0b");
     }
-
-    // 6. Fallback : Si le cloud échoue, on charge ce qu'on a en local
-    console.log("Chargement des données locales (fallback)");
-    const saved = localStorage.getItem('infoCards');
-    if (saved) {
-        try {
-            cards = JSON.parse(saved);
-        } catch(e) {
-            cards = [];
-        }
-    }
-    
-    renderCards();
-    setSyncStatus("⚠️ Données locales", "#f59e0b");
 }
 // Nettoyage Coller & Echap
 document.getElementById('cardContent').addEventListener('paste', e => {
