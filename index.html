@@ -249,6 +249,7 @@
 </div>
 
 <script>
+let isDirty = false; // true si des modifs ne sont pas encore sur le cloud
 const DEFAULT_W = 350;
 const MIN_W = 220;
 const MIN_H = 180;
@@ -265,6 +266,7 @@ let draggedCardId = null;
 
 function saveToStorage() {
     localStorage.setItem('infoCards', JSON.stringify(cards));
+    isDirty = true; // Des modifications ont été faites localement
     setSyncStatus("⚠️ Modifs non synchronisées", "#f59e0b");
 }
 function renderCards() {
@@ -313,27 +315,20 @@ function setSyncStatus(msg, color) {
 }
 
 async function saveToCloud() {
-    if (cards.length === 0 && !confirm("Le tableau est vide. Voulez-vous vraiment écraser votre sauvegarde cloud ?")) {
-        return;
-    }
-
-    setSyncStatus("⏳ Synchronisation en cours...", "#6366f1");
-    
+    setSyncStatus("⏳ Synchronisation...", "#6366f1");
     try {
         const res = await fetch("/.netlify/functions/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cards }),
         });
-
         if (!res.ok) throw new Error("Erreur serveur");
-
+        
+        isDirty = false; // Synchro réussie, on peut fermer l'onglet sans crainte
         setSyncStatus("✅ Cloud à jour", "#16a34a");
-        // Optionnel : effacer le message après 5 secondes
-        setTimeout(() => setSyncStatus(""), 5000);
+        setTimeout(() => setSyncStatus(""), 3000);
     } catch (e) {
-        setSyncStatus("❌ Échec de synchro", "#dc2626");
-        alert("Erreur lors de la synchronisation : " + e.message);
+        setSyncStatus("❌ Échec synchro", "#dc2626");
     }
 }
     
@@ -478,26 +473,55 @@ function importNotes(e) {
 
 // Chargement depuis GitHub (notes.json) — anti-cache
 async function loadNotes() {
+    // 1. On affiche l'état de chargement
     setSyncStatus("🔄 Chargement...", "#6366f1");
+
     try {
-        // Le paramètre ?t= force le rafraîchissement
+        // 2. On récupère le fichier notes.json
+        // Le paramètre ?t= et cache: "no-store" forcent le navigateur à ignorer le cache
         const res = await fetch('notes.json?t=' + Date.now(), {
-            cache: "no-store" // Ajoute ceci pour être sûr
+            cache: "no-store"
         });
+
         if (res.ok) {
             const cloudCards = await res.json();
+
+            // 3. On vérifie que les données sont valides
             if (Array.isArray(cloudCards)) {
                 cards = cloudCards;
+                
+                // 4. On synchronise le stockage local
                 localStorage.setItem('infoCards', JSON.stringify(cards));
+                
+                // 5. Important : on réinitialise l'état "Dirty" 
+                // car les données locales sont maintenant identiques au cloud
+                isDirty = false;
+
                 renderCards();
                 setSyncStatus("✅ Chargé", "#16a34a");
+                setTimeout(() => setSyncStatus(""), 3000);
                 return;
             }
+        } else {
+            console.warn("Fichier notes.json introuvable ou inaccessible (Status: " + res.status + ")");
         }
-    } catch(e) {
-        console.error("Erreur de chargement :", e);
+    } catch (e) {
+        console.error("Erreur lors de la récupération du cloud :", e);
     }
+
+    // 6. Fallback : Si le cloud échoue, on charge ce qu'on a en local
+    console.log("Chargement des données locales (fallback)");
+    const saved = localStorage.getItem('infoCards');
+    if (saved) {
+        try {
+            cards = JSON.parse(saved);
+        } catch(e) {
+            cards = [];
+        }
+    }
+    
     renderCards();
+    setSyncStatus("⚠️ Données locales", "#f59e0b");
 }
 // Nettoyage Coller & Echap
 document.getElementById('cardContent').addEventListener('paste', e => {
