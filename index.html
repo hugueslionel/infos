@@ -265,7 +265,7 @@ let draggedCardId = null;
 
 function saveToStorage() {
     localStorage.setItem('infoCards', JSON.stringify(cards));
-    saveToCloud();
+    setSyncStatus("⚠️ Modifs non synchronisées", "#f59e0b");
 }
 function renderCards() {
     const grid = document.getElementById('cardsGrid');
@@ -313,21 +313,30 @@ function setSyncStatus(msg, color) {
 }
 
 async function saveToCloud() {
-    setSyncStatus("⏳ Sauvegarde...", "#f59e0b");
+    if (cards.length === 0 && !confirm("Le tableau est vide. Voulez-vous vraiment écraser votre sauvegarde cloud ?")) {
+        return;
+    }
+
+    setSyncStatus("⏳ Synchronisation en cours...", "#6366f1");
+    
     try {
         const res = await fetch("/.netlify/functions/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cards }),
         });
+
         if (!res.ok) throw new Error("Erreur serveur");
-        setSyncStatus("✅ Synchronisé", "#16a34a");
-        setTimeout(() => setSyncStatus(""), 3000);
+
+        setSyncStatus("✅ Cloud à jour", "#16a34a");
+        // Optionnel : effacer le message après 5 secondes
+        setTimeout(() => setSyncStatus(""), 5000);
     } catch (e) {
-        setSyncStatus("❌ Hors-ligne", "#dc2626");
-        console.error("Erreur sauvegarde cloud :", e);
+        setSyncStatus("❌ Échec de synchro", "#dc2626");
+        alert("Erreur lors de la synchronisation : " + e.message);
     }
 }
+    
 function setCardExpanded(cardId, isExpanded) {
     const idx = cards.findIndex(c => c.id == cardId);
     if (idx === -1) return;
