@@ -450,11 +450,14 @@ function drop(e) {
 
 // ── EXPORT / IMPORT ──
 function exportNotes() {
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}`;
     const dataStr = JSON.stringify(cards, null, 2);
     const blob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url; link.download = "notes.json"; link.click();
+    link.href = url; link.download = `notes_${stamp}.json`; link.click();
 }
 
 function importNotes(e) {
@@ -511,9 +514,10 @@ document.getElementById('cardContent').addEventListener('paste', e => {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// INIT
+// INIT — chargement local uniquement (pas de requête réseau au démarrage)
 cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
-loadNotes();
+renderCards();
+setSyncStatus("💾 Local — cliquez ☁️ pour synchroniser", "#f59e0b");
 window.addEventListener('beforeunload', (e) => {
     if (isDirty) {
         // Le message personnalisé n'est plus affiché par la plupart des navigateurs modernes 
