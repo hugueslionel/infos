@@ -514,10 +514,9 @@ document.getElementById('cardContent').addEventListener('paste', e => {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// INIT — chargement local uniquement (pas de requête réseau au démarrage)
+// INIT — chargement depuis le cloud au démarrage (fichier statique, aucun crédit Netlify)
 cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
-renderCards();
-setSyncStatus("💾 Local — cliquez ☁️ pour synchroniser", "#f59e0b");
+loadNotes();
 window.addEventListener('beforeunload', (e) => {
     if (isDirty) {
         // Le message personnalisé n'est plus affiché par la plupart des navigateurs modernes 
