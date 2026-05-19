@@ -485,15 +485,24 @@ async function loadNotes() {
 
         if (response.ok) {
             const data = await response.json();
-            
-            // On vérifie que le fichier contient bien des données
-            if (data && Array.isArray(data)) {
+
+            // On ne remplace les données locales que si le cloud en a davantage,
+            // ou si le local est vide — évite d'écraser avec un fichier vide
+            if (data && Array.isArray(data) && data.length > 0) {
                 cards = data;
                 localStorage.setItem('infoCards', JSON.stringify(cards));
-                renderCards();
                 setSyncStatus("✅ Synchronisé", "#16a34a");
                 setTimeout(() => setSyncStatus(""), 3000);
+            } else if (data && Array.isArray(data) && data.length === 0 && cards.length === 0) {
+                // Cloud vide ET local vide : pas de données du tout, c'est normal
+                setSyncStatus("✅ Synchronisé", "#16a34a");
+                setTimeout(() => setSyncStatus(""), 3000);
+            } else {
+                // Cloud vide mais local a des données : on garde le local
+                setSyncStatus("☁️ Cloud vide — données locales conservées", "#f59e0b");
+                setTimeout(() => setSyncStatus(""), 4000);
             }
+            renderCards();
         } else {
             console.log("Fichier non trouvé sur le serveur, utilisation du local");
             renderCards();
