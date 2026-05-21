@@ -20,7 +20,7 @@
             background: white;
             padding: 25px;
             border-radius: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
@@ -31,7 +31,7 @@
 
         .header h1 { font-size: 28px; color: #333; flex: 1; min-width: 200px; }
 
-        .header-actions { display: flex; align-items: center; gap: 12px; }
+        .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
         .btn-add {
             background: #4CAF50;
@@ -50,6 +50,64 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(76,175,80,.3);
         }
+
+        /* ── ONGLETS DE CATÉGORIES ── */
+        .tabs-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 7px 18px;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .tab:hover { border-color: #667eea; color: #667eea; }
+        .tab.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+        }
+        .tab .tab-count {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 1px 7px;
+            font-size: 11px;
+        }
+        .tab.active .tab-count { background: rgba(255,255,255,0.3); }
+        .tab:not(.active) .tab-count { background: #eee; color: #888; }
+
+        .tab-separator { width: 1px; height: 28px; background: #e0e0e0; margin: 0 4px; }
+
+        .btn-new-category {
+            padding: 7px 14px;
+            border-radius: 20px;
+            border: 2px dashed #bbb;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: #999;
+            transition: all 0.2s;
+        }
+        .btn-new-category:hover { border-color: #667eea; color: #667eea; }
 
         /* ── Grille flex wrap ── */
         .cards-grid {
@@ -96,55 +154,74 @@
         .card.color-purple::before { background:linear-gradient(to right,#9c27b0,transparent); }
         .card.color-teal::before   { background:linear-gradient(to right,#009688,transparent); }
 
-        .card-header {
-            padding:20px; display:flex; justify-content:space-between;
-            align-items:flex-start; gap:10px;
-            position:relative; z-index:1; flex-shrink:0;
+        /* Badge de catégorie sur la carte */
+        .card-category-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            background: rgba(102,126,234,0.15);
+            color: #667eea;
+            margin-bottom: 4px;
+            letter-spacing: 0.03em;
         }
-        .card-title { font-size:20px; font-weight:600; color:#000; flex:1; word-break:break-word; }
-        .card-actions { display:flex; gap:8px; }
+
+        .card-header {
+            padding: 14px 20px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        .card-header-left { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+        .card-title { font-size: 18px; font-weight: 600; color: #000; word-break: break-word; }
+        .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
         .btn-icon {
-            background:transparent; border:none; cursor:pointer;
-            font-size:18px; padding:5px; border-radius:4px; transition:all .2s;
+            background: transparent; border: none; cursor: pointer;
+            font-size: 18px; padding: 5px; border-radius: 4px; transition: all .2s;
         }
-        .btn-icon:hover { background:rgba(0,0,0,0.05); }
+        .btn-icon:hover { background: rgba(0,0,0,0.05); }
 
         .card-content {
-            padding:0 20px 20px; color:#000; line-height:1.6;
-            position:relative; z-index:1; word-wrap:break-word;
-            overflow-y:auto; flex:1; min-height:0;
+            padding: 0 20px 20px; color: #000; line-height: 1.6;
+            position: relative; z-index: 1; word-wrap: break-word;
+            overflow-y: auto; flex: 1; min-height: 0;
         }
-        .card-content.collapsed { max-height:100px; overflow:hidden; }
+        .card-content.collapsed { max-height: 100px; overflow: hidden; }
         .card-content.collapsed::after {
-            content:''; position:absolute; bottom:0; left:0; right:0;
-            height:40px; background:linear-gradient(transparent,white); pointer-events:none;
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 40px; background: linear-gradient(transparent, white); pointer-events: none;
         }
 
         .card-footer {
-            padding:12px 20px; background:rgba(248,249,250,.9);
-            border-top:1px solid #e9ecef;
-            display:flex; justify-content:center; align-items:center; gap: 15px;
-            position:relative; z-index:1; flex-shrink:0;
+            padding: 12px 20px; background: rgba(248,249,250,.9);
+            border-top: 1px solid #e9ecef;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            position: relative; z-index: 1; flex-shrink: 0;
         }
 
         .btn-expand {
-            background:#667eea; border:none; color:white; cursor:pointer;
-            font-size:13px; font-weight:600; padding:6px 15px;
-            border-radius:20px; transition:all .2s;
+            background: #667eea; border: none; color: white; cursor: pointer;
+            font-size: 13px; font-weight: 600; padding: 6px 15px;
+            border-radius: 20px; transition: all .2s;
         }
-        .btn-expand:hover { background:#5568d3; transform:translateY(-1px); }
+        .btn-expand:hover { background: #5568d3; transform: translateY(-1px); }
 
         .btn-reset-size {
-            background:transparent; border:1px solid #ccc; color:#888;
-            cursor:pointer; font-size:12px; padding:4px 10px;
-            border-radius:20px; transition:all .2s;
+            background: transparent; border: 1px solid #ccc; color: #888;
+            cursor: pointer; font-size: 12px; padding: 4px 10px;
+            border-radius: 20px; transition: all .2s;
             display: none;
         }
         .card-wrapper.has-custom .btn-reset-size { display: block; }
 
         /* ── RESIZE HANDLES ── */
-        .rh-right { position:absolute; top:10%; right:0; bottom:14px; width:14px; cursor:ew-resize; z-index:20; opacity:0; display:flex; align-items:center; justify-content:center; }
+        .rh-right  { position:absolute; top:10%; right:0; bottom:14px; width:14px; cursor:ew-resize; z-index:20; opacity:0; display:flex; align-items:center; justify-content:center; }
         .rh-bottom { position:absolute; bottom:0; left:10%; right:14px; height:14px; cursor:ns-resize; z-index:20; opacity:0; display:flex; align-items:center; justify-content:center; }
         .rh-corner { position:absolute; bottom:0; right:0; width:18px; height:18px; cursor:nwse-resize; z-index:21; opacity:0; }
         .rh-corner::before { content:''; position:absolute; bottom:3px; right:3px; width:8px; height:8px; border-right:2px solid #667eea; border-bottom:2px solid #667eea; }
@@ -152,32 +229,65 @@
 
         /* ── MODAL ── */
         .modal {
-            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center;
         }
-        .modal.active { display:flex; }
-        .modal-content { background:white; padding:30px; border-radius:15px; max-width:700px; width:90%; max-height:85vh; overflow-y:auto; }
-        
-        .toolbar { background:#f8f9fa; border:2px solid #e9ecef; border-radius:8px 8px 0 0; padding:8px; display:flex; gap:5px; flex-wrap:wrap; }
-        .toolbar button { background:transparent; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; }
-        .toolbar button.active { background:#667eea; color:white; }
-        
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; }
+
+        .toolbar { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px 8px 0 0; padding: 8px; display: flex; gap: 5px; flex-wrap: wrap; }
+        .toolbar button { background: transparent; border: none; padding: 8px 12px; cursor: pointer; border-radius: 4px; }
+        .toolbar button.active { background: #667eea; color: white; }
+
         .editor {
-            width:100%; min-height:200px; padding:15px; border:2px solid #e9ecef; border-top:none;
-            border-radius:0 0 8px 8px; outline:none; font-family:inherit;
+            width: 100%; min-height: 200px; padding: 15px; border: 2px solid #e9ecef; border-top: none;
+            border-radius: 0 0 8px 8px; outline: none; font-family: inherit;
         }
 
-        .color-picker { display:flex; gap:10px; }
-        .color-option { width:35px; height:35px; border-radius:8px; cursor:pointer; border:3px solid transparent; }
-        .color-option.selected { border-color:#333; transform:scale(1.1); }
-        .blue { background:#667eea; } .green { background:#4CAF50; } .orange { background:#ff9800; }
-        .red { background:#f44336; } .purple { background:#9c27b0; } .teal { background:#009688; }
+        .color-picker { display: flex; gap: 10px; }
+        .color-option { width: 35px; height: 35px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
+        .color-option:hover { transform: scale(1.1); }
+        .color-option.selected { border-color: #333; transform: scale(1.1); }
+        .blue   { background: #667eea; } .green  { background: #4CAF50; }
+        .orange { background: #ff9800; } .red    { background: #f44336; }
+        .purple { background: #9c27b0; } .teal   { background: #009688; }
 
-        .empty-state { text-align:center; padding:60px; background:white; border-radius:15px; width:100%; color:#999; }
-        
-        body.resizing-ew * { cursor:ew-resize !important; user-select:none; }
-        body.resizing-ns * { cursor:ns-resize !important; user-select:none; }
-        body.resizing-nwse * { cursor:nwse-resize !important; user-select:none; }
+        .empty-state { text-align: center; padding: 60px; background: white; border-radius: 15px; width: 100%; color: #999; }
+
+        body.resizing-ew   * { cursor: ew-resize !important;   user-select: none; }
+        body.resizing-ns   * { cursor: ns-resize !important;   user-select: none; }
+        body.resizing-nwse * { cursor: nwse-resize !important; user-select: none; }
+
+        /* ── Modal catégorie ── */
+        .modal-cat-content {
+            background: white; padding: 28px; border-radius: 15px;
+            max-width: 420px; width: 90%;
+        }
+        .modal-cat-content h2 { margin-bottom: 18px; color: #333; }
+        .modal-cat-content input {
+            width: 100%; padding: 10px 14px; border: 2px solid #e9ecef;
+            border-radius: 8px; font-size: 15px; margin-bottom: 14px; outline: none;
+        }
+        .modal-cat-content input:focus { border-color: #667eea; }
+        .cat-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 16px; }
+        .cat-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 12px; background: #f8f9fa; border-radius: 8px;
+        }
+        .cat-item span { font-size: 14px; color: #444; }
+        .cat-item button {
+            background: transparent; border: none; cursor: pointer;
+            color: #f44336; font-size: 16px; padding: 2px 6px; border-radius: 4px;
+        }
+        .cat-item button:hover { background: #fff0f0; }
+
+        /* Sélecteur catégorie dans le formulaire note */
+        .form-select {
+            width: 100%; padding: 10px 14px; border: 2px solid #e9ecef;
+            border-radius: 8px; font-size: 14px; background: white;
+            font-family: inherit; cursor: pointer; outline: none;
+        }
+        .form-select:focus { border-color: #667eea; }
     </style>
 </head>
 <body>
@@ -187,36 +297,45 @@
         <h1>📋 Mes Informations</h1>
         <div class="header-actions">
             <button class="btn-add" onclick="openModal()">+ Nouvelle info</button>
-            <button onclick="saveToCloud()" 
-                    style="background-color: #6366f1; color: white; border: none; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+            <button onclick="saveToCloud()"
+                    style="background-color:#6366f1;color:white;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-weight:600;transition:all 0.3s;">
                 ☁️ Synchroniser
             </button>
-            <span id="syncStatus" style="font-size:13px; color:#888; min-width:120px; text-align:center;"></span>
-            <div style="display: flex; gap: 5px;">
-                <button onclick="exportNotes()" 
-                        style="background-color: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <span id="syncStatus" style="font-size:13px;color:#888;min-width:120px;text-align:center;"></span>
+            <div style="display:flex;gap:5px;">
+                <button onclick="exportNotes()"
+                        style="background-color:#e0e7ff;color:#4338ca;border:1px solid #c7d2fe;padding:10px 18px;border-radius:12px;cursor:pointer;font-weight:600;transition:all 0.3s;">
                     💾 Exporter
-                </button>            
-                <button onclick="document.getElementById('importFile').click()" 
-                        style="background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                </button>
+                <button onclick="document.getElementById('importFile').click()"
+                        style="background-color:#dcfce7;color:#15803d;border:1px solid #bbf7d0;padding:10px 18px;border-radius:12px;cursor:pointer;font-weight:600;transition:all 0.3s;">
                     📂 Importer
-                </button>            
+                </button>
                 <input type="file" id="importFile" style="display:none" onchange="importNotes(event)" accept=".json">
             </div>
         </div>
     </div>
+
+    <!-- BARRE D'ONGLETS -->
+    <div class="tabs-bar" id="tabsBar"></div>
+
     <div class="cards-grid" id="cardsGrid"></div>
 </div>
 
+<!-- Modal note -->
 <div class="modal" id="modal">
     <div class="modal-content">
         <h2 id="modalTitle" style="margin-bottom:20px;">Nouvelle information</h2>
         <div style="margin-bottom:15px;">
-            <label style="display:block; font-weight:bold; margin-bottom:5px;">Titre</label>
-            <input type="text" id="cardTitle" style="width:100%; padding:10px; border:2px solid #eee; border-radius:8px;">
+            <label style="display:block;font-weight:bold;margin-bottom:5px;">Titre</label>
+            <input type="text" id="cardTitle" style="width:100%;padding:10px;border:2px solid #eee;border-radius:8px;">
         </div>
         <div style="margin-bottom:15px;">
-            <label style="display:block; font-weight:bold; margin-bottom:5px;">Couleur</label>
+            <label style="display:block;font-weight:bold;margin-bottom:5px;">Rubrique</label>
+            <select id="cardCategory" class="form-select"></select>
+        </div>
+        <div style="margin-bottom:15px;">
+            <label style="display:block;font-weight:bold;margin-bottom:5px;">Couleur</label>
             <div class="color-picker">
                 <div class="color-option blue selected" onclick="selectColor('blue')"></div>
                 <div class="color-option green" onclick="selectColor('green')"></div>
@@ -227,7 +346,7 @@
             </div>
         </div>
         <div>
-            <label style="display:block; font-weight:bold; margin-bottom:5px;">Contenu</label>
+            <label style="display:block;font-weight:bold;margin-bottom:5px;">Contenu</label>
             <div class="toolbar">
                 <button onclick="formatText('bold')"><b>B</b></button>
                 <button onclick="formatText('italic')"><i>I</i></button>
@@ -241,18 +360,50 @@
             </div>
             <div class="editor" id="cardContent" contenteditable="true"></div>
         </div>
-        <div style="margin-top:20px; display:flex; gap:10px;">
-            <button class="btn-add" style="flex:1; margin:0;" onclick="saveCard()">Enregistrer</button>
-            <button style="flex:1; background:#ccc; border:none; border-radius:12px; cursor:pointer;" onclick="closeModal()">Annuler</button>
+        <div style="margin-top:20px;display:flex;gap:10px;">
+            <button class="btn-add" style="flex:1;margin:0;" onclick="saveCard()">Enregistrer</button>
+            <button style="flex:1;background:#ccc;border:none;border-radius:12px;cursor:pointer;" onclick="closeModal()">Annuler</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal gestion des catégories -->
+<div class="modal" id="modalCat">
+    <div class="modal-cat-content">
+        <h2>Gérer les rubriques</h2>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <input type="text" id="newCatName" placeholder="Nom de la nouvelle rubrique…" onkeydown="if(event.key==='Enter')addCategory()">
+            <button onclick="addCategory()"
+                    style="background:#667eea;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;white-space:nowrap;">
+                + Ajouter
+            </button>
+        </div>
+        <div class="cat-list" id="catList"></div>
+        <div style="display:flex;justify-content:flex-end;">
+            <button onclick="closeModalCat()"
+                    style="background:#6c757d;color:white;border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600;">
+                Fermer
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-let isDirty = false; // true si des modifs ne sont pas encore sur le cloud
+/* ═══════════════════════════════════════════════════
+   CONFIG & DONNÉES
+═══════════════════════════════════════════════════ */
+let isDirty = false;
 const DEFAULT_W = 350;
 const MIN_W = 220;
 const MIN_H = 180;
+
+// Rubriques par défaut (stockées séparément)
+const DEFAULT_CATS = ['Général', 'Perso', 'Boulot'];
+let categories = [];
+try {
+    const sc = localStorage.getItem('infoCategories');
+    categories = sc ? JSON.parse(sc) : [...DEFAULT_CATS];
+} catch(e) { categories = [...DEFAULT_CATS]; }
 
 let cards = [];
 try {
@@ -260,34 +411,87 @@ try {
     if (saved) cards = JSON.parse(saved);
 } catch(e) { cards = []; }
 
+// S'assurer que chaque note a une catégorie
+cards = cards.map(c => ({ ...c, expanded: c.expanded || false, category: c.category || categories[0] }));
+
 let selectedColor = 'blue';
 let editingCardId = null;
 let draggedCardId = null;
+let activeTab = '__all__'; // identifiant de l'onglet actif
 
+/* ═══════════════════════════════════════════════════
+   SAUVEGARDE
+═══════════════════════════════════════════════════ */
 function saveToStorage() {
     localStorage.setItem('infoCards', JSON.stringify(cards));
-    isDirty = true; // Des modifications ont été faites localement
+    localStorage.setItem('infoCategories', JSON.stringify(categories));
+    isDirty = true;
     setSyncStatus("⚠️ Modifs non synchronisées", "#f59e0b");
 }
+
+/* ═══════════════════════════════════════════════════
+   ONGLETS
+═══════════════════════════════════════════════════ */
+function countForCat(cat) {
+    return cat === '__all__' ? cards.length : cards.filter(c => c.category === cat).length;
+}
+
+function renderTabs() {
+    const bar = document.getElementById('tabsBar');
+    let html = `
+        <button class="tab ${activeTab === '__all__' ? 'active' : ''}" onclick="setTab('__all__')">
+            Toutes <span class="tab-count">${countForCat('__all__')}</span>
+        </button>
+        <div class="tab-separator"></div>
+    `;
+    categories.forEach(cat => {
+        const active = activeTab === cat ? 'active' : '';
+        html += `<button class="tab ${active}" onclick="setTab('${escapeSingleQuote(cat)}')">${escapeHtml(cat)} <span class="tab-count">${countForCat(cat)}</span></button>`;
+    });
+    html += `<div class="tab-separator"></div>
+             <button class="btn-new-category" onclick="openModalCat()">⚙️ Rubriques</button>`;
+    bar.innerHTML = html;
+}
+
+function setTab(cat) {
+    activeTab = cat;
+    renderTabs();
+    renderCards();
+}
+
+/* ═══════════════════════════════════════════════════
+   CARTES
+═══════════════════════════════════════════════════ */
 function renderCards() {
     const grid = document.getElementById('cardsGrid');
-    if (cards.length === 0) {
-        grid.innerHTML = `<div class="empty-state"><h2>Aucune note. Cliquez sur "+ Nouvelle info".</h2></div>`;
+    const visible = activeTab === '__all__' ? cards : cards.filter(c => c.category === activeTab);
+
+    if (visible.length === 0) {
+        const msg = activeTab === '__all__'
+            ? 'Aucune note. Cliquez sur "+ Nouvelle info".'
+            : `Aucune note dans la rubrique « ${escapeHtml(activeTab)} ».`;
+        grid.innerHTML = `<div class="empty-state"><h2>${msg}</h2></div>`;
         return;
     }
 
-    grid.innerHTML = cards.map(card => {
+    grid.innerHTML = visible.map(card => {
         const w = card.customWidth || DEFAULT_W;
         const h = card.customHeight || null;
         const hasCustom = !!(card.customWidth || card.customHeight);
         const collapsed = !h && !card.expanded;
+        const catName = card.category || categories[0];
 
         return `
         <div class="card-wrapper ${hasCustom ? 'has-custom' : ''}" style="width:${w+10}px;" data-card-id="${card.id}">
-            <div class="card color-${card.color}" style="${h ? `height:${h}px` : ''}" 
-                 data-card-id="${card.id}" draggable="true" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)">
+            <div class="card color-${card.color}" style="${h ? `height:${h}px` : ''}"
+                 data-card-id="${card.id}" draggable="true"
+                 ondragstart="dragStart(event)" ondragover="dragOver(event)"
+                 ondrop="drop(event)" ondragend="dragEnd(event)">
                 <div class="card-header">
-                    <div class="card-title">${card.title}</div>
+                    <div class="card-header-left">
+                        <span class="card-category-badge">${escapeHtml(catName)}</span>
+                        <div class="card-title">${escapeHtml(card.title)}</div>
+                    </div>
                     <div class="card-actions">
                         <button class="btn-icon" onclick="editCard(${card.id})">✏️</button>
                         <button class="btn-icon" onclick="deleteCard(${card.id})">🗑️</button>
@@ -296,42 +500,130 @@ function renderCards() {
                 <div class="card-content ${collapsed ? 'collapsed' : ''}">${card.content}</div>
                 <div class="card-footer">
                     <button class="btn-reset-size" onclick="resetCardSize(${card.id})" title="Taille d'origine">↺</button>
-                    <button class="btn-expand" onclick="event.stopPropagation(); setCardExpanded(${card.id}, true)" title="Lire plus">▼</button>
-                    <button class="btn-expand" onclick="event.stopPropagation(); setCardExpanded(${card.id}, false)" title="Voir moins">▲</button>
+                    <button class="btn-expand" onclick="event.stopPropagation();setCardExpanded(${card.id},true)" title="Lire plus">▼</button>
+                    <button class="btn-expand" onclick="event.stopPropagation();setCardExpanded(${card.id},false)" title="Voir moins">▲</button>
                 </div>
             </div>
-            <div class="rh-right" onmousedown="startResize(event,${card.id},'right')"></div>
+            <div class="rh-right"  onmousedown="startResize(event,${card.id},'right')"></div>
             <div class="rh-bottom" onmousedown="startResize(event,${card.id},'bottom')"></div>
             <div class="rh-corner" onmousedown="startResize(event,${card.id},'corner')"></div>
         </div>`;
     }).join('');
 }
 
-// ── FONCTIONS ──
-
-function setSyncStatus(msg, color) {
-    const el = document.getElementById('syncStatus');
-    if (el) { el.textContent = msg; el.style.color = color || '#888'; }
+/* ═══════════════════════════════════════════════════
+   MODAL GESTION RUBRIQUES
+═══════════════════════════════════════════════════ */
+function openModalCat() {
+    renderCatList();
+    document.getElementById('modalCat').classList.add('active');
+    setTimeout(() => document.getElementById('newCatName').focus(), 100);
+}
+function closeModalCat() {
+    document.getElementById('modalCat').classList.remove('active');
+}
+function renderCatList() {
+    const list = document.getElementById('catList');
+    if (categories.length === 0) {
+        list.innerHTML = '<p style="color:#aaa;font-size:13px;text-align:center;">Aucune rubrique.</p>';
+        return;
+    }
+    list.innerHTML = categories.map((cat, i) => `
+        <div class="cat-item">
+            <span>${escapeHtml(cat)}</span>
+            <button onclick="deleteCategory(${i})" title="Supprimer">🗑️</button>
+        </div>`).join('');
+}
+function addCategory() {
+    const input = document.getElementById('newCatName');
+    const name = input.value.trim();
+    if (!name) return;
+    if (categories.includes(name)) { alert('Cette rubrique existe déjà.'); return; }
+    categories.push(name);
+    input.value = '';
+    saveToStorage();
+    renderCatList();
+    renderTabs();
+    renderCards();
+    populateCategorySelect();
+}
+function deleteCategory(idx) {
+    const cat = categories[idx];
+    const count = cards.filter(c => c.category === cat).length;
+    const msg = count > 0
+        ? `Supprimer la rubrique « ${cat} » ? Les ${count} note(s) seront basculées vers « ${categories[0] || 'Général'} ».`
+        : `Supprimer la rubrique « ${cat} » ?`;
+    if (!confirm(msg)) return;
+    // Rebascule les notes orphelines
+    const fallback = categories.filter((_, i) => i !== idx)[0] || 'Général';
+    cards = cards.map(c => c.category === cat ? { ...c, category: fallback } : c);
+    categories.splice(idx, 1);
+    if (activeTab === cat) activeTab = '__all__';
+    saveToStorage();
+    renderCatList();
+    renderTabs();
+    renderCards();
+    populateCategorySelect();
 }
 
-async function saveToCloud() {
-    setSyncStatus("⏳ Synchronisation...", "#6366f1");
-    try {
-        const res = await fetch("/.netlify/functions/save", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ cards }),
-        });
-        if (!res.ok) throw new Error("Erreur serveur");
-        
-        isDirty = false; // Synchro réussie, on peut fermer l'onglet sans crainte
-        setSyncStatus("✅ Cloud à jour", "#16a34a");
-        setTimeout(() => setSyncStatus(""), 3000);
-    } catch (e) {
-        setSyncStatus("❌ Échec synchro", "#dc2626");
+/* ═══════════════════════════════════════════════════
+   MODAL NOTE
+═══════════════════════════════════════════════════ */
+function populateCategorySelect(selectedCat) {
+    const sel = document.getElementById('cardCategory');
+    sel.innerHTML = categories.map(cat =>
+        `<option value="${escapeHtml(cat)}" ${cat === selectedCat ? 'selected' : ''}>${escapeHtml(cat)}</option>`
+    ).join('');
+}
+
+function openModal() {
+    editingCardId = null;
+    document.getElementById('modalTitle').textContent = "Nouvelle information";
+    document.getElementById('cardTitle').value = "";
+    document.getElementById('cardContent').innerHTML = "";
+    // Pré-sélectionner l'onglet actif s'il ne s'agit pas de "Toutes"
+    const preselect = (activeTab !== '__all__' && categories.includes(activeTab)) ? activeTab : categories[0];
+    populateCategorySelect(preselect);
+    selectColor('blue');
+    document.getElementById('modal').classList.add('active');
+    setTimeout(() => document.getElementById('cardTitle').focus(), 100);
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+function saveCard() {
+    const title = document.getElementById('cardTitle').value.trim();
+    const content = document.getElementById('cardContent').innerHTML.trim();
+    const category = document.getElementById('cardCategory').value;
+    if (!title || !content) return alert("Remplissez le titre et le contenu !");
+
+    if (editingCardId) {
+        const idx = cards.findIndex(c => c.id == editingCardId);
+        cards[idx] = { ...cards[idx], title, content, color: selectedColor, category };
+    } else {
+        cards.push({ id: Date.now(), title, content, color: selectedColor, category, expanded: false });
+    }
+    saveToStorage(); renderTabs(); renderCards(); closeModal();
+}
+
+function editCard(id) {
+    const card = cards.find(c => c.id == id);
+    editingCardId = id;
+    document.getElementById('modalTitle').textContent = "Modifier l'information";
+    document.getElementById('cardTitle').value = card.title;
+    document.getElementById('cardContent').innerHTML = card.content;
+    populateCategorySelect(card.category || categories[0]);
+    selectColor(card.color);
+    document.getElementById('modal').classList.add('active');
+}
+
+function deleteCard(id) {
+    if (confirm("Supprimer cette note ?")) {
+        cards = cards.filter(c => c.id != id);
+        saveToStorage(); renderTabs(); renderCards();
     }
 }
-    
+
 function setCardExpanded(cardId, isExpanded) {
     const idx = cards.findIndex(c => c.id == cardId);
     if (idx === -1) return;
@@ -350,111 +642,81 @@ function resetCardSize(cardId) {
     }
 }
 
-// ── MODAL & EDIT ──
-function openModal() {
-    editingCardId = null;
-    document.getElementById('modalTitle').textContent = "Nouvelle information";
-    document.getElementById('cardTitle').value = "";
-    document.getElementById('cardContent').innerHTML = "";
-    document.getElementById('modal').classList.add('active');
-    setTimeout(() => document.getElementById('cardTitle').focus(), 100);
-}
-
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
-
-function saveCard() {
-    const title = document.getElementById('cardTitle').value.trim();
-    const content = document.getElementById('cardContent').innerHTML.trim();
-    if (!title || !content) return alert("Remplissez tout !");
-
-    if (editingCardId) {
-        const idx = cards.findIndex(c => c.id == editingCardId);
-        cards[idx] = { ...cards[idx], title, content, color: selectedColor };
-    } else {
-        cards.push({ id: Date.now(), title, content, color: selectedColor, expanded: false });
-    }
-    saveToStorage(); renderCards(); closeModal();
-}
-
-function editCard(id) {
-    const card = cards.find(c => c.id == id);
-    editingCardId = id;
-    document.getElementById('modalTitle').textContent = "Modifier l'information";
-    document.getElementById('cardTitle').value = card.title;
-    document.getElementById('cardContent').innerHTML = card.content;
-    selectColor(card.color);
-    document.getElementById('modal').classList.add('active');
-}
-
-function deleteCard(id) {
-    if (confirm("Supprimer ?")) {
-        cards = cards.filter(c => c.id != id);
-        saveToStorage(); renderCards();
-    }
-}
-
-function selectColor(c) {
-    selectedColor = c;
-    document.querySelectorAll('.color-option').forEach(opt => opt.classList.toggle('selected', opt.classList.contains(c)));
-}
-
-function formatText(cmd) { document.execCommand(cmd, false, null); }
-function changeFontSize(s) { document.execCommand('fontSize', false, s); }
-
-// ── RESIZE ──
+/* ═══════════════════════════════════════════════════
+   RESIZE
+═══════════════════════════════════════════════════ */
 let rsState = null;
 function startResize(e, id, dir) {
     e.preventDefault();
-    const wrapper = document.querySelector(`[data-card-id="${id}"]`);
+    const wrapper = document.querySelector(`.card-wrapper[data-card-id="${id}"]`);
     const cardEl = wrapper.querySelector('.card');
     rsState = { id, dir, wrapper, cardEl, startX: e.clientX, startY: e.clientY, startW: wrapper.offsetWidth-10, startH: cardEl.offsetHeight };
     document.body.classList.add(`resizing-${dir==='corner'?'nwse':(dir==='right'?'ew':'ns')}`);
     document.addEventListener('mousemove', onResize);
     document.addEventListener('mouseup', stopResize);
 }
-
 function onResize(e) {
     const dx = e.clientX - rsState.startX;
     const dy = e.clientY - rsState.startY;
     if (rsState.dir !== 'bottom') rsState.wrapper.style.width = Math.max(MIN_W, rsState.startW + dx) + 10 + 'px';
-    if (rsState.dir !== 'right') rsState.cardEl.style.height = Math.max(MIN_H, rsState.startH + dy) + 'px';
+    if (rsState.dir !== 'right')  rsState.cardEl.style.height = Math.max(MIN_H, rsState.startH + dy) + 'px';
 }
-
 function stopResize() {
     const idx = cards.findIndex(c => c.id == rsState.id);
     cards[idx].customWidth = rsState.wrapper.offsetWidth - 10;
-    if (rsState.dir !== 'right') {
-        cards[idx].customHeight = rsState.cardEl.offsetHeight;
-        cards[idx].expanded = true;
-    }
+    if (rsState.dir !== 'right') { cards[idx].customHeight = rsState.cardEl.offsetHeight; cards[idx].expanded = true; }
     document.body.className = "";
     document.removeEventListener('mousemove', onResize);
     document.removeEventListener('mouseup', stopResize);
     saveToStorage(); renderCards();
 }
 
-// ── DRAG & DROP ──
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP
+═══════════════════════════════════════════════════ */
 function dragStart(e) { draggedCardId = e.target.closest('.card').dataset.cardId; e.target.classList.add('dragging'); }
 function dragOver(e) { e.preventDefault(); const c = e.target.closest('.card'); if (c) c.classList.add('drag-over'); }
 function dragEnd(e) { e.target.classList.remove('dragging'); document.querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over')); }
 function drop(e) {
-    const targetId = e.target.closest('.card').dataset.cardId;
-    if (draggedCardId && targetId !== draggedCardId) {
-        const i1 = cards.findIndex(c => c.id == draggedCardId);
-        const i2 = cards.findIndex(c => c.id == targetId);
-        const [moved] = cards.splice(i1, 1);
-        cards.splice(i2, 0, moved);
-        saveToStorage(); renderCards();
+    const targetId = e.target.closest('.card')?.dataset.cardId;
+    if (!targetId || draggedCardId === targetId) return;
+    const i1 = cards.findIndex(c => c.id == draggedCardId);
+    const i2 = cards.findIndex(c => c.id == targetId);
+    const [moved] = cards.splice(i1, 1);
+    cards.splice(i2, 0, moved);
+    saveToStorage(); renderCards();
+}
+
+/* ═══════════════════════════════════════════════════
+   CLOUD / EXPORT / IMPORT
+═══════════════════════════════════════════════════ */
+function setSyncStatus(msg, color) {
+    const el = document.getElementById('syncStatus');
+    if (el) { el.textContent = msg; el.style.color = color || '#888'; }
+}
+
+async function saveToCloud() {
+    setSyncStatus("⏳ Synchronisation...", "#6366f1");
+    try {
+        const res = await fetch("/.netlify/functions/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cards }),
+        });
+        if (!res.ok) throw new Error("Erreur serveur");
+        isDirty = false;
+        setSyncStatus("✅ Cloud à jour", "#16a34a");
+        setTimeout(() => setSyncStatus(""), 3000);
+    } catch (e) {
+        setSyncStatus("❌ Échec synchro", "#dc2626");
     }
 }
 
-// ── EXPORT / IMPORT ──
 function exportNotes() {
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
     const stamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}h${pad(now.getMinutes())}`;
-    const dataStr = JSON.stringify(cards, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(cards, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url; link.download = `notes_${stamp}.json`; link.click();
@@ -466,7 +728,8 @@ function importNotes(e) {
         try {
             const imported = JSON.parse(event.target.result);
             if (confirm(`Importer ${imported.length} notes ?`)) {
-                cards = imported; saveToStorage(); renderCards();
+                cards = imported.map(c => ({ ...c, expanded: c.expanded || false, category: c.category || categories[0] }));
+                saveToStorage(); renderTabs(); renderCards();
             }
         } catch(e) { alert("Erreur fichier"); }
     };
@@ -474,66 +737,71 @@ function importNotes(e) {
     e.target.value = "";
 }
 
-// Chargement depuis GitHub (notes.json) — anti-cache
 async function loadNotes() {
     setSyncStatus("🔄 Chargement...", "#6366f1");
     try {
-        // Le ?t= est crucial pour que l'ordi du bureau voit les modifs de l'ordi maison
-        const response = await fetch('notes.json?t=' + Date.now(), {
-            cache: "no-store"
-        });
-
+        const response = await fetch('notes.json?t=' + Date.now(), { cache: "no-store" });
         if (response.ok) {
             const data = await response.json();
-
-            // On ne remplace les données locales que si le cloud en a davantage,
-            // ou si le local est vide — évite d'écraser avec un fichier vide
             if (data && Array.isArray(data) && data.length > 0) {
-                cards = data;
+                cards = data.map(c => ({ ...c, expanded: c.expanded || false, category: c.category || categories[0] }));
                 localStorage.setItem('infoCards', JSON.stringify(cards));
                 setSyncStatus("✅ Synchronisé", "#16a34a");
                 setTimeout(() => setSyncStatus(""), 3000);
-            } else if (data && Array.isArray(data) && data.length === 0 && cards.length === 0) {
-                // Cloud vide ET local vide : pas de données du tout, c'est normal
+            } else if (!data?.length && !cards.length) {
                 setSyncStatus("✅ Synchronisé", "#16a34a");
                 setTimeout(() => setSyncStatus(""), 3000);
             } else {
-                // Cloud vide mais local a des données : on garde le local
                 setSyncStatus("☁️ Cloud vide — données locales conservées", "#f59e0b");
                 setTimeout(() => setSyncStatus(""), 4000);
             }
-            renderCards();
         } else {
-            console.log("Fichier non trouvé sur le serveur, utilisation du local");
-            renderCards();
+            console.log("Fichier non trouvé, utilisation du local");
         }
-    } catch (e) {
-        console.error("Erreur de synchro :", e);
-        // Si le réseau échoue, on affiche quand même ce qu'on a en local
-        renderCards();
+    } catch(e) {
+        console.error("Erreur synchro:", e);
         setSyncStatus("⚠️ Mode hors-ligne", "#f59e0b");
     }
+    renderTabs(); renderCards();
 }
-// Nettoyage Coller & Echap
+
+/* ═══════════════════════════════════════════════════
+   UTILITAIRES
+═══════════════════════════════════════════════════ */
+function selectColor(c) {
+    selectedColor = c;
+    document.querySelectorAll('.color-option').forEach(opt => opt.classList.toggle('selected', opt.classList.contains(c)));
+}
+function formatText(cmd) { document.execCommand(cmd, false, null); }
+function changeFontSize(s) { document.execCommand('fontSize', false, s); }
+
+function escapeHtml(text) {
+    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
+}
+function escapeSingleQuote(text) { return text.replace(/'/g, "\\'"); }
+
+/* ═══════════════════════════════════════════════════
+   ÉVÉNEMENTS & INIT
+═══════════════════════════════════════════════════ */
 document.getElementById('cardContent').addEventListener('paste', e => {
     e.preventDefault();
     const text = (e.originalEvent || e).clipboardData.getData('text/plain');
     document.execCommand('insertText', false, text);
 });
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-// INIT — chargement depuis le cloud au démarrage (fichier statique, aucun crédit Netlify)
-cards = cards.map(c => ({ ...c, expanded: c.expanded || false }));
-loadNotes();
-window.addEventListener('beforeunload', (e) => {
-    if (isDirty) {
-        // Le message personnalisé n'est plus affiché par la plupart des navigateurs modernes 
-        // pour éviter le spam, mais la boîte de dialogue standard apparaîtra.
-        e.preventDefault();
-        e.returnValue = ''; 
-    }
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeModalCat(); }
 });
+
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+document.getElementById('modalCat').addEventListener('click', e => { if (e.target === e.currentTarget) closeModalCat(); });
+
+window.addEventListener('beforeunload', e => {
+    if (isDirty) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// INIT
+loadNotes();
 </script>
 </body>
 </html>
