@@ -1,1 +1,40 @@
-[]
+[
+  {
+    "id": 1777961955406,
+    "title": "POINT PROGRAMMES",
+    "content": "<ul><li><b><u>Cahier de réussite:</u></b>&nbsp; Git Hub carnet 9</li><li><b><u>Acquis des élèves:</u>&nbsp; </b>&nbsp;acquis.html sur clé et sur pc école</li><li><b><u>JEUX</u></b>: imprimerie, lecture, lettres sur pc école et github</li><li><b><u>Histoires</u></b>: sur pc école et clé</li><li><b><u>Infos</u></b>: sur github et netlify</li><li><b><u>Agenda:</u></b>&nbsp; sur github et netlify</li><li><u><b>Phrases:</b></u> sur pc école</li><li><b><u>Suivi des jeux:</u></b> sur pc école<br><br><br></li></ul>",
+    "color": "blue",
+    "expanded": true,
+    "category": "Général"
+  },
+  {
+    "id": 1773908810160,
+    "title": "Horaires de bus",
+    "content": "<font size=\"3\"><b><u>Bibliothèque:</u></b></font><div><ul><li><font size=\"3\">Matin:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;départ&nbsp; &nbsp; 10h12&nbsp; &nbsp; &nbsp;10h30&nbsp;</font></li></ul><font size=\"3\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;retour&nbsp; &nbsp; &nbsp;10h57&nbsp; &nbsp; &nbsp;11h16&nbsp; &nbsp; &nbsp; 11h37</font></div><div><ul><li><font size=\"3\">Après-midi :&nbsp; &nbsp; &nbsp; &nbsp;départ&nbsp; &nbsp; 14h10&nbsp; &nbsp; &nbsp;14h28&nbsp; &nbsp; &nbsp; 14h52</font></li></ul><font size=\"3\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;retour&nbsp; &nbsp; &nbsp;15h19&nbsp; &nbsp; &nbsp; 15h38&nbsp; &nbsp; &nbsp;15h57</font></div><div><font size=\"3\"><br></font></div><div><font size=\"3\"><br></font></div><div><font size=\"3\"><u><b>Cinéma:</b></u></font></div><div><font size=\"3\">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; départ&nbsp; 9h07&nbsp; &nbsp; &nbsp; retour&nbsp; &nbsp; 10h18&nbsp; &nbsp; &nbsp; 10h39&nbsp; &nbsp; &nbsp; 10h59&nbsp;&nbsp;</font></div>",
+    "color": "blue",
+    "date": "2026-04-10T09:40:58.244Z",
+    "expanded": true,
+    "customWidth": 376,
+    "customHeight": 201,
+    "category": "Général"
+  },
+  {
+    "id": 1774614628023,
+    "title": "achat pour rentrée",
+    "content": "une année de conte léa nathan<div><br></div><div>édition cigale: compréhension</div><div><br></div><div>jeu aimanté, forme géométrique</div><div><br></div><div>pot de colle avec pinceau</div>",
+    "color": "blue",
+    "date": "2026-04-03T09:24:13.555Z",
+    "expanded": true,
+    "customWidth": 306,
+    "customHeight": 205,
+    "category": "Général"
+  },
+  {
+    "id": 1777894994864,
+    "title": "COOP",
+    "content": "Apporter le cahier",
+    "color": "red",
+    "expanded": false,
+    "category": "Général"
+  }
+]
