@@ -701,7 +701,8 @@ async function saveToCloud() {
         const res = await fetch("/.netlify/functions/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ cards }),
+            // ON ENVOIE LES CARTES ET LES CATEGORIES
+            body: JSON.stringify({ cards, categories }), 
         });
         if (!res.ok) throw new Error("Erreur serveur");
         isDirty = false;
@@ -740,23 +741,31 @@ function importNotes(e) {
 async function loadNotes() {
     setSyncStatus("🔄 Chargement...", "#6366f1");
     try {
-        const response = await fetch('notes.json?t=' + Date.now(), { cache: "no-store" });
+        // ON APPELLE LA FONCTION NETLIFY LOAD PLUTÔT QUE LE FICHIER STATIQUE
+        const response = await fetch('/.netlify/functions/load?t=' + Date.now(), { cache: "no-store" });
         if (response.ok) {
             const data = await response.json();
-            if (data && Array.isArray(data) && data.length > 0) {
-                cards = data.map(c => ({ ...c, expanded: c.expanded || false, category: c.category || categories[0] }));
-                localStorage.setItem('infoCards', JSON.stringify(cards));
-                setSyncStatus("✅ Synchronisé", "#16a34a");
-                setTimeout(() => setSyncStatus(""), 3000);
-            } else if (!data?.length && !cards.length) {
-                setSyncStatus("✅ Synchronisé", "#16a34a");
-                setTimeout(() => setSyncStatus(""), 3000);
-            } else {
-                setSyncStatus("☁️ Cloud vide — données locales conservées", "#f59e0b");
-                setTimeout(() => setSyncStatus(""), 4000);
+            
+            // Gestion du nouveau format { cards, categories } ou rétrocompatibilité
+            if (data && typeof data === 'object' && !Array.isArray(data)) {
+                cards = data.cards || [];
+                if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+                    categories = data.categories;
+                }
+            } else if (Array.isArray(data)) {
+                // Au cas où ton fichier actuel sur GitHub ne contient qu'un tableau de cartes
+                cards = data;
             }
+
+            // Sécurité pour lier les catégories existantes
+            cards = cards.map(c => ({ ...c, expanded: c.expanded || false, category: c.category || categories[0] }));
+            
+            localStorage.setItem('infoCards', JSON.stringify(cards));
+            localStorage.setItem('infoCategories', JSON.stringify(categories));
+            setSyncStatus("✅ Synchronisé", "#16a34a");
+            setTimeout(() => setSyncStatus(""), 3000);
         } else {
-            console.log("Fichier non trouvé, utilisation du local");
+            console.log("Erreur lors de la récupération, utilisation du local");
         }
     } catch(e) {
         console.error("Erreur synchro:", e);
