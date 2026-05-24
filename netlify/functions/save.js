@@ -11,8 +11,8 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     // On encode les données en Base64 pour l'API GitHub
-    const content = Buffer.from(JSON.stringify(body.cards, null, 2)).toString("base64");
-
+// Après : On sauvegarde l'intégralité de l'objet envoyé (cartes + catégories)
+    const content = Buffer.from(JSON.stringify(body, null, 2)).toString("base64");
     // 1. Récupérer le SHA actuel du fichier (indispensable pour modifier un fichier existant)
     const getRes = await fetch(
       `https://api.github.com/repos/${GITHUB_REPO}/contents/${FILE_PATH}?ref=${BRANCH}`,
