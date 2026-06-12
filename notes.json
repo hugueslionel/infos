@@ -37,6 +37,14 @@
       "color": "red",
       "expanded": false,
       "category": "Général"
+    },
+    {
+      "id": 1781265652492,
+      "title": "Programme Cahier de Liaison",
+      "content": "<ul><li>Rassembler les messages par famille sur tableau de bord pour voir ce qui est lu ou pas lu.</li><li>Acheter des crédits sur Brevo.</li></ul>",
+      "color": "red",
+      "category": "Général",
+      "expanded": false
     }
   ],
   "categories": [
