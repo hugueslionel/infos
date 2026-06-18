@@ -45,6 +45,14 @@
       "color": "red",
       "category": "Général",
       "expanded": false
+    },
+    {
+      "id": 1781784246709,
+      "title": "Papier de rentrée",
+      "content": "<ul><li>Fiche de renseignement</li><li>Fiche coop</li><li>Fiche matériel</li><li>Fiche horaires et vacances</li><li>Cahier de défi</li><li><br></li></ul>",
+      "color": "blue",
+      "category": "Boulot",
+      "expanded": false
     }
   ],
   "categories": [
