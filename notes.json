@@ -53,6 +53,14 @@
       "color": "blue",
       "category": "Boulot",
       "expanded": false
+    },
+    {
+      "id": 1789022740028,
+      "title": "Achats",
+      "content": "Baguettes pour percussions",
+      "color": "green",
+      "category": "Boulot",
+      "expanded": false
     }
   ],
   "categories": [
